@@ -24,12 +24,7 @@ build_script:
   # Project Configuration
   - mkdir build
   - cd build
-  - >-
-      cmake -G "%cmake_generator%"                            ^
-        "-DCMAKE_BUILD_TYPE=%configuration%"                  ^
-        -Dgtest_disable_pthreads=ON                           ^
-        -Dgtest_force_shared_crt=ON                           ^
-        -DCMAKE_INSTALL_PREFIX=C:\Temp\libspatialindex ..
+  - cmake -G "%cmake_generator%" "-DCMAKE_BUILD_TYPE=%configuration%" -Dgtest_disable_pthreads=ON -Dgtest_force_shared_crt=ON -DCMAKE_INSTALL_PREFIX=C:\Temp\libspatialindex ..
 
   # Build
   - cmake --build . --config "%configuration%"
