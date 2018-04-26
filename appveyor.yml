@@ -10,7 +10,7 @@ platform:
   - x86
 
 before_build:
-  - git clone https://github.com/libspatialindex/libspatialindex.git
+  - git clone https://github.com/michael-herwig/libspatialindex.git
   - cd libspatialindex
 
 build_script:
@@ -18,10 +18,18 @@ build_script:
   - if "%platform%" == "x86" call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
   - if "%platform%" == "x64" call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
 
+  # Configure Cmake-Generator
+  - if "%platform%" == "x86" set cmake_generator=Visual Studio 15 2017
+  - if "%platform%" == "x64" set cmake_generator=Visual Studio 15 2017 Win64
   # Project Configuration
   - mkdir build
   - cd build
-  - cmake "-DCMAKE_BUILD_TYPE=%configuration%" -DCMAKE_INSTALL_PREFIX=C:\Temp\libspatialindex ..
+  - > 
+      cmake -G "%cmake_generator%" 
+        "-DCMAKE_BUILD_TYPE=%configuration%" 
+        -Dgtest_disable_pthreads=ON
+        -Dgtest_force_shared_crt=ON
+        -DCMAKE_INSTALL_PREFIX=C:\Temp\libspatialindex ..
 
   # Build
   - cmake --build . --config "%configuration%"
