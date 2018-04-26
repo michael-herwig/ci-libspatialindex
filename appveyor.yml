@@ -55,4 +55,4 @@ deploy:
   provider: GitHub
   auth_token:
     secure: aWupJYJFNmN8GhkiNHaV412MnmQuedA9npndju27MejT80u1ERbwRvIt4qptWyDn
-  artifact: /*
+  artifact: $(artifact_name)
