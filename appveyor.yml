@@ -43,12 +43,9 @@ build_script:
 test_script:
   - ctest
 
-after_test:
-  - appveyor PushArtifact "%artifact_name%"
-
 deploy:
   release: $(version)
-  tag: $(build_tag)
+  tag: $(version)
   force_update: true
   description: 'AppVeyor CD'
   provider: GitHub
