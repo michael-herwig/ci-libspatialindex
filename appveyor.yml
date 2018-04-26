@@ -43,7 +43,7 @@ build_script:
 test_script:
   - ctest
 
-after_tests:
+after_test:
   - appveyor PushArtifact "%artifact_name%"
 
 deploy:
