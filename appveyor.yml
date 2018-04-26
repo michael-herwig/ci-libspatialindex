@@ -33,7 +33,26 @@ test_script:
   - ctest
 
 on_finish:
+  # Run Install-Target
   - cmake --build . --config "%configuration%" --target install
-  - set artifact_name=libspatialindex-msvc15-%configuration%-%platform%.zip
+
+  # Create Artifact
+  - set build_tag=msvc15-%version%-%configuration%-%platform%
+  - set artifact_name=libspatialindex-%build_tag%.zip
   - 7z a "%artifact_name%" C:\Temp\libspatialindex\*
   - appveyor PushArtifact "%artifact_name%"
+
+before_deploy:
+  # Extract Version
+  - powershell -Command "&{ Get-Content .\CMakeLists.txt | Select-String -Pattern '(?!SET\(SIDX_LIB_VERSION ")\d\.\d\.\d(?!"\))' -AllMatches | % { $_.matches } | % { Write-Host $_.value } }" > version
+  - set /P version=<version
+
+deploy:
+  release: $(version)
+  tag: $(build_tag)
+  force_update: true
+  description: 'AppVeyor CD'
+  provider: GitHub
+  auth_token:
+    secure: aWupJYJFNmN8GhkiNHaV412MnmQuedA9npndju27MejT80u1ERbwRvIt4qptWyDn
+  artifact: /*
