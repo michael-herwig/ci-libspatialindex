@@ -10,7 +10,7 @@ platform:
   - x86
 
 before_build:
-  - git clone https://github.com/michael-herwig/libspatialindex.git
+  - git submodule update --init --recursive
   - cd libspatialindex
 
   # Extract Version
@@ -42,6 +42,9 @@ build_script:
 
 test_script:
   - ctest
+
+after_tests:
+  - appveyor PushArtifact "%artifact_name%"
 
 deploy:
   release: $(version)
