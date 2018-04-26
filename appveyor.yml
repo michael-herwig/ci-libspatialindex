@@ -13,6 +13,11 @@ before_build:
   - git clone https://github.com/michael-herwig/libspatialindex.git
   - cd libspatialindex
 
+  # Extract Version
+  - powershell -Command "&{ Get-Content .\CMakeLists.txt | Select-String -Pattern '(?!SET\(SIDX_LIB_VERSION ")\d\.\d\.\d(?!"\))' -AllMatches | % { $_.matches } | % { Write-Host $_.value } }" > version
+  - set /P version=<version
+  - echo "Building Version %version%"
+
 build_script:
   # Configure Build Environment
   - if "%platform%" == "x86" call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
@@ -21,31 +26,25 @@ build_script:
   # Configure Cmake-Generator
   - if "%platform%" == "x86" set cmake_generator=Visual Studio 15 2017
   - if "%platform%" == "x64" set cmake_generator=Visual Studio 15 2017 Win64
+
   # Project Configuration
   - mkdir build
   - cd build
   - cmake -G "%cmake_generator%" "-DCMAKE_BUILD_TYPE=%configuration%" -Dgtest_disable_pthreads=ON -Dgtest_force_shared_crt=ON -DCMAKE_INSTALL_PREFIX=C:\Temp\libspatialindex ..
 
-  # Build
-  - cmake --build . --config "%configuration%"
+  # Build & Install
+  - cmake --build . --config "%configuration%" --target install
+
+  # Create Artifact
+  - set build_tag=msvc15-%configuration%-%platform%
+  - set artifact_name=libspatialindex-%version%-%build_tag%.zip
+  - 7z a "%artifact_name%" C:\Temp\libspatialindex\*
 
 test_script:
   - ctest
 
 on_finish:
-  # Run Install-Target
-  - cmake --build . --config "%configuration%" --target install
-
-  # Create Artifact
-  - set build_tag=msvc15-%version%-%configuration%-%platform%
-  - set artifact_name=libspatialindex-%build_tag%.zip
-  - 7z a "%artifact_name%" C:\Temp\libspatialindex\*
   - appveyor PushArtifact "%artifact_name%"
-
-before_deploy:
-  # Extract Version
-  - powershell -Command "&{ Get-Content .\CMakeLists.txt | Select-String -Pattern '(?!SET\(SIDX_LIB_VERSION ")\d\.\d\.\d(?!"\))' -AllMatches | % { $_.matches } | % { Write-Host $_.value } }" > version
-  - set /P version=<version
 
 deploy:
   release: $(version)
