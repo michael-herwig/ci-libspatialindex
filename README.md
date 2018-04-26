@@ -1,1 +1,1 @@
-# libspatialindex-ci [![Build Status](https://ci.appveyor.com/api/projects/status/github/michael-herwig/libspatialindex-ci)](https://ci.appveyor.com/project/michael-herwig/libspatialindex-ci)
+[![Build status](https://ci.appveyor.com/api/projects/status/5m2w0hpcg6takdp7?retina=true)](https://ci.appveyor.com/project/michael-herwig/ci-libspatialindex)
