@@ -14,7 +14,7 @@ before_build:
   - cd libspatialindex
 
   # Extract Version
-  - ps: Get-Content .\CMakeLists.txt | Select-String -Pattern '(?!SET\(SIDX_LIB_VERSION ")\d\.\d\.\d(?!"\))' -AllMatches | Select -First 1 | % { $_.Matches[0].Value } | Out-File -Encoding ASCII .\version
+  - ps: Get-Content .\CMakeLists.txt | Select-String -Pattern 'SET\(SIDX_LIB_VERSION "(\d\.\d\.\d)"\)' | % { $_.Matches[0].Groups[1].Value } | Out-File -Encoding ASCII .\version
   - set /P version=<version
   - echo "Building Version %version%"
 
