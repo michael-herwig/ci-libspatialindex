@@ -24,7 +24,7 @@ build_script:
   # Project Configuration
   - mkdir build
   - cd build
-  - > 
+  - | 
       cmake -G "%cmake_generator%" 
         "-DCMAKE_BUILD_TYPE=%configuration%" 
         -Dgtest_disable_pthreads=ON
