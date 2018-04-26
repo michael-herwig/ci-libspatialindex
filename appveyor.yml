@@ -1,0 +1,36 @@
+image:
+  - Visual Studio 2017
+
+configuration:
+  - Debug
+  - Release
+
+platform:
+  - x64
+  - x86
+
+before_build:
+  - git clone https://github.com/libspatialindex/libspatialindex.git
+  - cd libspatialindex
+
+build_script:
+  # Configure Build Environment
+  - if "%platform%" == "x86" call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
+  - if "%platform%" == "x64" call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+
+  # Project Configuration
+  - mkdir build
+  - cd build
+  - cmake "-DCMAKE_BUILD_TYPE=%configuration%" -DCMAKE_INSTALL_PREFIX=C:\Temp\libspatialindex ..
+
+  # Build
+  - cmake --build . --config "%configuration%"
+
+test_script:
+  - ctest
+
+on_finish:
+  - cmake --build . --config "%configuration%" --target install
+  - set artifact_name=libspatialindex-msvc15-%configuration%-%platform%.zip
+  - 7z a "%artifact_name%" C:\Temp\libspatialindex\*
+  - appveyor PushArtifact "%artifact_name%"
